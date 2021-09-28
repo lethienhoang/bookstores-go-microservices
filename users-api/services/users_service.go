@@ -4,6 +4,7 @@ import (
 	"github.com/bookstores/users-api/domains/users"
 	dtos "github.com/bookstores/users-api/dtos/users"
 	"github.com/bookstores/users-api/requests"
+	"github.com/bookstores/users-api/untils/crypto"
 	"github.com/bookstores/users-api/untils/errors"
 	"github.com/jinzhu/copier"
 )
@@ -17,6 +18,7 @@ type userServiceInterface interface {
 	Update(request *requests.CreateOrUpdateUserRequest, userId int64) (*dtos.UserDto, *errors.RestError)
 	Delete(userId int64) *errors.RestError
 	FindByStatus(status string) ([]dtos.UserDto, *errors.RestError)
+	LoginUser(request *requests.LoginRequest) (*dtos.LoginDto, *errors.RestError)
 }
 
 var (
@@ -29,6 +31,8 @@ func (s *userService) Create(request *requests.CreateOrUpdateUserRequest) (*dtos
 	}
 
 	user := new(users.User)
+	request.Password= crypto.GetMd5Hash(request.Password)
+
 	if err := copier.Copy(&user, &request); err != nil {
 		return nil, errors.NewBadRequestError("can't copy user: " + err.Error())
 	}
@@ -116,4 +120,26 @@ func (s *userService) FindByStatus(status string) ([]dtos.UserDto, *errors.RestE
 	}
 
 	return res, nil
+}
+
+func (s *userService) LoginUser(request *requests.LoginRequest) (*dtos.LoginDto, *errors.RestError) {
+	if err := request.Validate(); err != nil {
+		return nil, err
+	}
+
+	user := users.User{
+		Email: request.Email,
+		Password: crypto.GetMd5Hash(request.Password),
+	}
+
+	if err := user.FindByEmailAndPassword(); err != nil {
+		return nil, err
+	}
+
+	res := dtos.LoginDto{
+		Email: user.Email,
+		IsLogin: true,
+	}
+
+	return &res, nil
 }

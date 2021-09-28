@@ -33,6 +33,7 @@ func loadEnv() {
 func StartApplication() {
 	loadEnv()
 
+	loggers.NewLogger()
 	loggers.Info("Starting application...")
 
 	// Db configuration

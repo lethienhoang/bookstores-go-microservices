@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/bookstores/users-api/db"
-	"github.com/bookstores/users-api/untils/crypto"
 	"github.com/bookstores/users-api/untils/date_utils"
 	"github.com/bookstores/users-api/untils/errors"
 	"github.com/bookstores/users-api/untils/loggers"
@@ -22,11 +21,12 @@ type User struct {
 }
 
 const (
-	queryInsertUser = "INSERT INTO users (first_name, last_name, email, date_created, Status, Password) VALUES (?, ?, ?, ?, ?, ?);"
-	queryGetUser    = "SELECT Id, first_name, last_name, email, date_created FROM users WHERE Id = ?;"
-	queryUpdateUser = "UPDATE users SET first_name = ?, last_name = ?, email = ?, date_created = ? WHERE Id = ?;"
+	queryInsertUser = "INSERT INTO users (first_name, last_name, email, date_created, status, Password) VALUES (?, ?, ?, ?, ?, ?)"
+	queryGetUser    = "SELECT Id, first_name, last_name, email, date_created FROM users WHERE Id = ?"
+	queryUpdateUser = "UPDATE users SET first_name = ?, last_name = ?, email = ?, date_created = ? WHERE Id = ?"
 	queryDeleteUser = "DELETE FROM users WHERE Id = ?"
-	queryFindUser   = "SELECT Id, first_name, last_name, email, date_created, status FROM users WHERE status=?;"
+	queryFindUser   = "SELECT Id, first_name, last_name, email, date_created, status FROM users WHERE status=?"
+	queryFindByEmailAndPass = "SELECT Id, first_name, last_name, email, date_created, status FROM users WHERE email=? and password=? and status='ACTIVE'"
 )
 
 const (
@@ -53,6 +53,25 @@ func (user *User) Get() *errors.RestError {
 	return nil
 }
 
+func (user *User) FindByEmailAndPassword() *errors.RestError {
+	stmt, err := db.DB.Prepare(queryFindByEmailAndPass)
+	if err != nil {
+		loggers.Error("error when trying to prepare statement", err)
+		return errors.NewInternalError(err.Error())
+	}
+
+	defer stmt.Close()
+
+	result := stmt.QueryRow(user.Email, user.Password)
+
+	if getErr := result.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.DateCreated); err != nil {
+		loggers.Error("error when trying to get data from db", err)
+		return mysql_utils.ParseError(getErr)
+	}
+
+	return nil
+}
+
 func (user *User) Create() *errors.RestError {
 	stmt, err := db.DB.Prepare(queryInsertUser)
 	if err != nil {
@@ -63,7 +82,6 @@ func (user *User) Create() *errors.RestError {
 
 	user.DateCreated = date_utils.GetNowString()
 	user.Status = StatusActive
-	user.Password = crypto.GetMd5Hash(user.Password)
 	resultExec, saveErr := stmt.Exec(user.FirstName, user.LastName, user.Email, user.DateCreated, user.Status, user.Password)
 	if saveErr != nil {
 		return mysql_utils.ParseError(saveErr)

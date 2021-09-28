@@ -1,0 +1,11 @@
+- Retrieve and start a Redis container (my-first-redis) with the docker run command:
+docker run --name my-first-redis -p 7001:6379 -d redis
+
+- Once the installation process is complete, check the status of current docker containers with the docker ps command:
+docker ps
+
+- Start the interactive redis-cli command shell using the following command:
+docker exec -it my-first-redis sh
+
+- Use the --link option to create and connect a new container to the existing Redis instance:
+docker run -it --rm --name my-second-redis --link my-first-redis:redis -d redis

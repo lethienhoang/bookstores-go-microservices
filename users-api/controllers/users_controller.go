@@ -110,3 +110,21 @@ func FindByStatus(c *gin.Context) {
 
 	c.JSON(http.StatusOK, users)
 }
+
+func Login(c *gin.Context)  {
+	var request requests.LoginRequest
+
+	if err := c.ShouldBindJSON(&request); err != nil {
+		restErr := errors.NewBadRequestError("invalid json body")
+		c.JSON(restErr.Code, restErr)
+		return
+	}
+
+	login, err := services.UserService.LoginUser(&request)
+	if err != nil {
+		c.JSON(err.Code, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, login)
+}

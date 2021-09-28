@@ -9,7 +9,7 @@ var (
 	Log *zap.Logger
 )
 
-func newLogger() {
+func NewLogger() {
 	config := zap.Config{
 		OutputPaths: []string{"stdout"},
 		Level:       zap.NewAtomicLevelAt(zap.InfoLevel),

@@ -13,6 +13,7 @@ func SetupUserRouter(router *gin.RouterGroup) {
 		users.PUT(":user_id", controllers.UpdateUser)
 		users.GET("status", controllers.FindByStatus)
 		users.DELETE(":user_id", controllers.DeleteUser)
+		users.POST("login", controllers.Login)
 	}
 
 }
