@@ -19,7 +19,7 @@ type AccessTokenHandler struct {
 	service services.IAccessTokenService
 }
 
-func NewHandler(service services.IAccessTokenService) IAccessTokenHandler {
+func NewAccessToken(service services.IAccessTokenService) IAccessTokenHandler {
 	return &AccessTokenHandler{
 		service: service,
 	}

@@ -129,14 +129,21 @@ func (s *userService) LoginUser(request *requests.LoginRequest) (*dtos.LoginDto,
 
 	user := users.User{
 		Email: request.Email,
-		Password: crypto.GetMd5Hash(request.Password),
+		//Password: crypto.GetMd5Hash(request.Password),
+		Password: request.Password,
 	}
 
 	if err := user.FindByEmailAndPassword(); err != nil {
 		return nil, err
 	}
 
+	userDtos := dtos.UserDto{}
+	if err := copier.Copy(&userDtos, &user); err != nil {
+		return nil, errors.NewBadRequestError("can't copy user: " + err.Error())
+	}
+
 	res := dtos.LoginDto{
+		UserInfo: userDtos,
 		Email: user.Email,
 		IsLogin: true,
 	}
