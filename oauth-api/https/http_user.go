@@ -1,9 +1,11 @@
 package https
 
 import (
+	"github.com/bookstores/oauth-api/repository/access_token"
 	"github.com/bookstores/oauth-api/requests"
 	"github.com/bookstores/oauth-api/services"
 	"github.com/bookstores/oauth-api/utils/errors"
+	"github.com/bookstores/oauth-api/utils/jwt_auth"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -38,4 +40,27 @@ func (u UserHandler) Login(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, login)
+}
+
+func (u UserHandler) VerifyToken(c *gin.Context) {
+	bearToken := c.Request.Header.Get("Authorization")
+	tokenDecoded, err := jwt_auth.DecodeToken(bearToken, false)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, err.Error())
+		c.Abort()
+		return
+	}
+
+	atService := services.NewAccessTokenService(access_token.NewAccessTokenRepository())
+	userId, errRest := atService.GetTokenByClientId(tokenDecoded.AccessTokenId)
+	if errRest != nil {
+		c.JSON(http.StatusUnauthorized, errRest.Message)
+		return
+	}
+	if tokenDecoded.UserId != userId {
+		c.JSON(http.StatusUnauthorized, "user is not authorized")
+		return
+	}
+
+	c.JSON(http.StatusOK, "Ok")
 }

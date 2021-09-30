@@ -1,14 +1,15 @@
 package services
 
 import (
-	"github.com/bookstores/oauth-api/domain"
+	"github.com/bookstores/oauth-api/dtos"
 	"github.com/bookstores/oauth-api/repository/access_token"
 	"github.com/bookstores/oauth-api/utils/errors"
+	"github.com/bookstores/oauth-api/utils/jwt_auth"
 )
 
 type IAccessTokenService interface {
-	GetTokenByClientId(id string) (*domain.AccessToken, *errors.RestError)
-	CreateNewToken(accessToken *domain.AccessToken) *errors.RestError
+	GetTokenByClientId(id string) (int64, *errors.RestError)
+	CreateNewToken(userId int64) (*dtos.TokenDetailsDto, *errors.RestError)
 }
 
 type AccessTokenService struct {
@@ -21,43 +22,39 @@ func NewAccessTokenService(repo access_token.IAccessTokenRepository) IAccessToke
 	}
 }
 
-func (s *AccessTokenService) GetTokenByClientId(id string) (*domain.AccessToken, *errors.RestError) {
+func (s *AccessTokenService) GetTokenByClientId(id string) (int64, *errors.RestError) {
 	if len(id) == 0 {
-		return nil, errors.NewBadRequestError("no access token id provided")
+		return 0, errors.NewBadRequestError("no access token id provided")
 	}
 
-	token, err := s.repository.GetTokenById(id)
+	userId, err := s.repository.GetTokenById(id)
+	if err != nil {
+		return 0, errors.NewInternalError(err.Error())
+	}
+
+	return userId, nil
+}
+
+func (s *AccessTokenService) CreateNewToken(userId int64) (*dtos.TokenDetailsDto, *errors.RestError) {
+	tokenDetail := new(dtos.TokenDetailsDto)
+	if err := jwt_auth.CreateToken(userId, tokenDetail); err != nil {
+		return nil, errors.NewInternalError(err.Error())
+	}
+
+	if err := jwt_auth.CreateRefreshToken(userId, tokenDetail); err != nil {
+		return nil, errors.NewInternalError(err.Error())
+	}
+
+	var err error
+	err = s.repository.SetToken(tokenDetail.AccessUuid, userId, tokenDetail.AtExpires)
 	if err != nil {
 		return nil, errors.NewInternalError(err.Error())
 	}
 
-	if err := token.Validate(); err != nil {
-		return nil, err
+	err = s.repository.SetToken(tokenDetail.RefreshUuid, userId, tokenDetail.RtExpires)
+	if err != nil {
+		return nil, errors.NewInternalError(err.Error())
 	}
 
-	// if now < token.Expires && (token.Expires-now) <= 10800 {
-	// 	// update token when token is expried soon
-	// 	accessToken := domain.AccessToken{}
-	// 	accessToken.ClientId = id
-	// 	accessToken.Expires = time.Now().Add(time.Hour * 24).UTC().Unix()
-	// 	accessToken.UserId = token.UserId
-
-	// 	if err := s.repository.SetToken(&accessToken); err != nil {
-	// 		return nil, errors.NewInternalError(err.Error())
-	// 	}
-	// }
-
-	return token, nil
-}
-
-func (s *AccessTokenService) CreateNewToken(accessToken *domain.AccessToken) *errors.RestError {
-	if err := accessToken.Validate(); err != nil {
-		return err
-	}
-
-	if newRrr := s.repository.SetToken(accessToken); newRrr != nil {
-		return errors.NewInternalError(newRrr.Error())
-	}
-
-	return nil
+	return tokenDetail, nil
 }

@@ -15,7 +15,7 @@ func NewUserRepository() IUserRepository {
 }
 
 type IUserRepository interface {
-	LoginUser(request *requests.LoginRequest) (*dtos.UserDto, *errors.RestError)
+	LoginUser(request *requests.LoginRequest) (*dtos.UserResponseDto, *errors.RestError)
 }
 
 type UserRepository struct{}
@@ -28,7 +28,7 @@ type HttpSuccess struct {
 	ID, Message string
 }
 
-func (s *UserRepository) LoginUser(request *requests.LoginRequest) (*dtos.UserDto, *errors.RestError) {
+func (s *UserRepository) LoginUser(request *requests.LoginRequest) (*dtos.UserResponseDto, *errors.RestError) {
 	if err := request.Validate(); err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func (s *UserRepository) LoginUser(request *requests.LoginRequest) (*dtos.UserDt
 	}
 
 	if resp.IsSuccess() {
-		userDto := dtos.UserDto{}
+		userDto := dtos.UserResponseDto{}
 		if err := json.Unmarshal(resp.Body(), &userDto); err != nil {
 			return nil, errors.NewBadRequestError("error in convert byte to object")
 		}
@@ -55,6 +55,4 @@ func (s *UserRepository) LoginUser(request *requests.LoginRequest) (*dtos.UserDt
 		httError := resp.Error().(*HttpError)
 		return nil, errors.NewInternalError(httError.Message)
 	}
-
-	return nil, nil
 }

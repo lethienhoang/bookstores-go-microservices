@@ -2,7 +2,6 @@ package access_token
 
 import (
 	"github.com/bookstores/oauth-api/db"
-	"github.com/bookstores/oauth-api/domain"
 	"time"
 )
 
@@ -11,25 +10,26 @@ func NewAccessTokenRepository() IAccessTokenRepository {
 }
 
 type IAccessTokenRepository interface {
-	GetTokenById(id string) (*domain.AccessToken, error)
-	SetToken(accessToken *domain.AccessToken) error
+	GetTokenById(clientId string) (int64, error)
+	SetToken(clientId string, userId int64, expToken int64) error
 }
 
 type AccessTokenRepository struct{}
 
-func (r *AccessTokenRepository) GetTokenById(clientId string) (*domain.AccessToken, error) {
-	val := &domain.AccessToken{}
+func (r *AccessTokenRepository) GetTokenById(clientId string) (int64, error) {
+	var val int64
 	err := db.Get(clientId, val)
 	if err != nil {
-		return nil, err //errors.NewInternalError(err.Error())
+		return 0, err //errors.NewInternalError(err.Error())
 	}
 
 	return val, nil
 }
 
-func (r *AccessTokenRepository) SetToken(accessToken *domain.AccessToken) error {
-	timeExp := time.Duration(time.Now().Hour() * 24)
-	if err := db.Set(accessToken.ClientId, accessToken, timeExp); err != nil {
+func (r *AccessTokenRepository) SetToken(clientId string, userId int64, expToken int64) error {
+	at := time.Unix(expToken, 0)
+	now := time.Now()
+	if err := db.Set(clientId, userId, at.Sub(now)); err != nil {
 		return err //errors.NewInternalError(err.Error())
 	}
 	return nil

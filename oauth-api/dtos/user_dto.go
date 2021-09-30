@@ -9,3 +9,9 @@ type UserDto struct {
 	Status      string `json:"status"`
 	Password    string `json:"password"`
 }
+
+type UserResponseDto struct {
+	UserInfo UserDto `json:"user_info"`
+	Email    string  `json:"email"`
+	IsLogin  bool    `json:"is_login"`
+}
