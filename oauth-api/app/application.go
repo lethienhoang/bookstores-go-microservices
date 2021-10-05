@@ -19,5 +19,12 @@ func StartApplication() {
 	userHandler := https.NewAccessTokenHandler(userService)
 
 	router.POST("/oauth/login", userHandler.Login)
-	router.Run(":8081")
+	router.GET("/oauth/verify-token", userHandler.VerifyToken)
+	router.POST("/oauth/refresh-token", userHandler.RefeshToken)
+	router.POST("/oauth/logout", userHandler.LogOut)
+
+	err := router.Run(":8081")
+	if err != nil {
+		return 
+	}
 }

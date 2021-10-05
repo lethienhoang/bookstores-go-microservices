@@ -10,7 +10,8 @@ import (
 
 type IUserService interface {
 	LoginUser(request *requests.LoginRequest) (*dtos.TokenDto, *errors.RestError)
-	//RefeshToken()
+	RefeshToken(userId int64) (*dtos.TokenDto, *errors.RestError)
+	DelToken(tokenId string) *errors.RestError
 }
 
 type UserService struct {
@@ -43,4 +44,22 @@ func (s *UserService) LoginUser(request *requests.LoginRequest) (*dtos.TokenDto,
 		AccessToken: token.AccessToken,
 		RefreshToken: token.RefreshToken,
 	}, nil
+}
+
+func (s *UserService) RefeshToken(userId int64) (*dtos.TokenDto, *errors.RestError) {
+	atService := NewAccessTokenService(access_token.NewAccessTokenRepository())
+	token, err := atService.CreateNewToken(userId)
+	if err != nil {
+		return  nil, err
+	}
+
+	return &dtos.TokenDto {
+		AccessToken: token.AccessToken,
+		RefreshToken: token.RefreshToken,
+	}, nil
+}
+
+func (s *UserService) DelToken(tokenId string) *errors.RestError  {
+	atService := NewAccessTokenService(access_token.NewAccessTokenRepository())
+	return atService.DeleteToken(tokenId)
 }

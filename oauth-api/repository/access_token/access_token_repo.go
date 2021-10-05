@@ -12,6 +12,7 @@ func NewAccessTokenRepository() IAccessTokenRepository {
 type IAccessTokenRepository interface {
 	GetTokenById(clientId string) (int64, error)
 	SetToken(clientId string, userId int64, expToken int64) error
+	Del(clientId string) error
 }
 
 type AccessTokenRepository struct{}
@@ -30,6 +31,13 @@ func (r *AccessTokenRepository) SetToken(clientId string, userId int64, expToken
 	at := time.Unix(expToken, 0)
 	now := time.Now()
 	if err := db.Set(clientId, userId, at.Sub(now)); err != nil {
+		return err //errors.NewInternalError(err.Error())
+	}
+	return nil
+}
+
+func (r *AccessTokenRepository) Del(clientId string) error {
+	if err := db.Delete(clientId); err != nil {
 		return err //errors.NewInternalError(err.Error())
 	}
 	return nil

@@ -10,6 +10,7 @@ import (
 type IAccessTokenService interface {
 	GetTokenByClientId(id string) (int64, *errors.RestError)
 	CreateNewToken(userId int64) (*dtos.TokenDetailsDto, *errors.RestError)
+	DeleteToken(id string) *errors.RestError
 }
 
 type AccessTokenService struct {
@@ -57,4 +58,13 @@ func (s *AccessTokenService) CreateNewToken(userId int64) (*dtos.TokenDetailsDto
 	}
 
 	return tokenDetail, nil
+}
+
+func (s *AccessTokenService) DeleteToken(id string) *errors.RestError {
+	err := s.repository.Del(id)
+	if err != nil {
+		return errors.NewInternalError(err.Error())
+	}
+
+	return nil
 }

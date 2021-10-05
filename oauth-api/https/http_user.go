@@ -12,6 +12,9 @@ import (
 
 type IUserHandler interface {
 	Login(c *gin.Context)
+	LogOut(c *gin.Context)
+	VerifyToken(c *gin.Context)
+	RefeshToken(c *gin.Context)
 }
 
 type UserHandler struct {
@@ -42,6 +45,30 @@ func (u UserHandler) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, login)
 }
 
+func (u UserHandler) LogOut(c *gin.Context)  {
+	bearToken := c.Request.Header.Get("Authorization")
+	tokenDecoded, err := jwt_auth.DecodeToken(bearToken, false)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, err.Error())
+		c.Abort()
+		return
+	}
+
+	restErr := u.service.DelToken(tokenDecoded.AccessTokenId)
+	if restErr != nil {
+		c.JSON(restErr.Code, restErr)
+		return
+	}
+
+	restErr = u.service.DelToken(tokenDecoded.RefeshTokenId)
+	if restErr != nil {
+		c.JSON(restErr.Code, restErr)
+		return
+	}
+
+	c.JSON(200, "user has log out")
+}
+
 func (u UserHandler) VerifyToken(c *gin.Context) {
 	bearToken := c.Request.Header.Get("Authorization")
 	tokenDecoded, err := jwt_auth.DecodeToken(bearToken, false)
@@ -63,4 +90,39 @@ func (u UserHandler) VerifyToken(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, "Ok")
+}
+
+func (u *UserHandler) RefeshToken(c *gin.Context)  {
+	bearToken := map[string]string{}
+	if err := c.ShouldBindJSON(&bearToken); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, err.Error())
+		return
+	}
+
+	tokenDecoded, err := jwt_auth.DecodeToken(bearToken["refresh_token"], false)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, err.Error())
+		c.Abort()
+		return
+	}
+
+	restErr := u.service.DelToken(tokenDecoded.AccessTokenId)
+	if restErr != nil {
+		c.JSON(restErr.Code, restErr)
+		return
+	}
+
+	restErr = u.service.DelToken(tokenDecoded.RefeshTokenId)
+	if restErr != nil {
+		c.JSON(restErr.Code, restErr)
+		return
+	}
+
+	reLogin, restErr := u.service.RefeshToken(tokenDecoded.UserId)
+	if restErr != nil {
+		c.JSON(restErr.Code, restErr)
+		return
+	}
+
+	c.JSON(http.StatusOK, reLogin)
 }
