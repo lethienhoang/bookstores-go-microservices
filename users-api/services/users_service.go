@@ -4,8 +4,8 @@ import (
 	"github.com/bookstores-go-microservices/users-api/domains/users"
 	dtos "github.com/bookstores-go-microservices/users-api/dtos/users"
 	"github.com/bookstores-go-microservices/users-api/requests"
-	"github.com/bookstores-go-microservices/users-api/untils/crypto"
-	"github.com/bookstores-go-microservices/users-api/untils/errors"
+	"github.com/bookstores-utils-go/crypto"
+	"github.com/bookstores-utils-go/errors"
 	"github.com/jinzhu/copier"
 )
 
