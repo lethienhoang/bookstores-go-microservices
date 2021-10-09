@@ -1,1 +1,1 @@
-# bookstores-go-microservices
+# bookstores-go-microservices/

@@ -1,16 +1,17 @@
 package requests
 
 import (
-	"github.com/bookstores/users-api/untils/errors"
 	"strings"
+
+	"github.com/bookstores-go-microservices/users-api/untils/errors"
 )
 
 type LoginRequest struct {
-	Email string `json:"email"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-func(l *LoginRequest) Validate() *errors.RestError {
+func (l *LoginRequest) Validate() *errors.RestError {
 	l.Password = strings.TrimSpace(l.Password)
 	if l.Password == "" {
 		return errors.NewBadRequestError("invalid password")

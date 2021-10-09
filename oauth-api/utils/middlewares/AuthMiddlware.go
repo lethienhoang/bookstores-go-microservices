@@ -1,9 +1,10 @@
 package middlewares
 
 import (
-	"github.com/bookstores/oauth-api/utils/jwt_auth"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/bookstores-go-microservices/oauth-api/utils/jwt_auth"
+	"github.com/gin-gonic/gin"
 )
 
 func AuthMiddleware() gin.HandlerFunc {

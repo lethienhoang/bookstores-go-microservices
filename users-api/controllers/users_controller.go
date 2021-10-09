@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/bookstores/users-api/requests"
-	"github.com/bookstores/users-api/services"
-	"github.com/bookstores/users-api/untils/errors"
+	"github.com/bookstores-go-microservices/users-api/requests"
+	"github.com/bookstores-go-microservices/users-api/services"
+	"github.com/bookstores-go-microservices/users-api/untils/errors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -111,7 +111,7 @@ func FindByStatus(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
-func Login(c *gin.Context)  {
+func Login(c *gin.Context) {
 	var request requests.LoginRequest
 
 	if err := c.ShouldBindJSON(&request); err != nil {

@@ -1,10 +1,10 @@
 package services
 
 import (
-	"github.com/bookstores/oauth-api/dtos"
-	"github.com/bookstores/oauth-api/repository/access_token"
-	"github.com/bookstores/oauth-api/utils/errors"
-	"github.com/bookstores/oauth-api/utils/jwt_auth"
+	"github.com/bookstores-go-microservices/oauth-api/dtos"
+	"github.com/bookstores-go-microservices/oauth-api/repository/access_token"
+	"github.com/bookstores-go-microservices/oauth-api/utils/errors"
+	"github.com/bookstores-go-microservices/oauth-api/utils/jwt_auth"
 )
 
 type IAccessTokenService interface {

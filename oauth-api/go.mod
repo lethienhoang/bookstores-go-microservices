@@ -1,4 +1,4 @@
-module github.com/bookstores/oauth-api
+module github.com/bookstores-go-microservices/oauth-api
 
 go 1.17
 

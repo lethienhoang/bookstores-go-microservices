@@ -2,10 +2,11 @@ package users
 
 import (
 	"encoding/json"
-	"github.com/bookstores/oauth-api/dtos"
-	"github.com/bookstores/oauth-api/requests"
-	"github.com/bookstores/oauth-api/utils/crypto"
-	"github.com/bookstores/oauth-api/utils/errors"
+
+	"github.com/bookstores-go-microservices/oauth-api/dtos"
+	"github.com/bookstores-go-microservices/oauth-api/requests"
+	"github.com/bookstores-go-microservices/oauth-api/utils/crypto"
+	"github.com/bookstores-go-microservices/oauth-api/utils/errors"
 	"github.com/go-resty/resty/v2"
 	_ "github.com/go-resty/resty/v2"
 )

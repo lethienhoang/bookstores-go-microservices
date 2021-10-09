@@ -1,4 +1,4 @@
-module github.com/bookstores/users-api
+module github.com/bookstores-go-microservices/users-api
 
 go 1.17
 

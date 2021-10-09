@@ -2,12 +2,13 @@ package jwt_auth
 
 import (
 	"fmt"
-	"github.com/bookstores/oauth-api/dtos"
-	"github.com/dgrijalva/jwt-go"
-	"github.com/google/uuid"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/bookstores-go-microservices/oauth-api/dtos"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/google/uuid"
 )
 
 func CreateToken(userId int64, tokenDetail *dtos.TokenDetailsDto) error {
@@ -28,15 +29,15 @@ func CreateToken(userId int64, tokenDetail *dtos.TokenDetailsDto) error {
 	atClaim["exp"] = tokenDetail.AtExpires
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaim)
 
-	tokenDetail.AccessToken, err =  at.SignedString([]byte(accessSecret))
+	tokenDetail.AccessToken, err = at.SignedString([]byte(accessSecret))
 	if err != nil {
 		return err
 	}
 
-	return  nil
+	return nil
 }
 
-func CreateRefreshToken(userId int64, tokenDetail *dtos.TokenDetailsDto) error  {
+func CreateRefreshToken(userId int64, tokenDetail *dtos.TokenDetailsDto) error {
 	refreshSecret := os.Getenv("REFRESH_SECRET")
 	var err error
 
@@ -58,7 +59,7 @@ func CreateRefreshToken(userId int64, tokenDetail *dtos.TokenDetailsDto) error  
 		return err
 	}
 
-	return  nil
+	return nil
 }
 
 func VerifyToken(tokenString string, isRefeshToken bool) (*jwt.Token, error) {
@@ -71,7 +72,7 @@ func VerifyToken(tokenString string, isRefeshToken bool) (*jwt.Token, error) {
 
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return  nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 
 		return []byte(accessSecret), nil
@@ -105,7 +106,7 @@ func DecodeToken(tokenString string, isRefeshToken bool) (*dtos.TokenDecodedDto,
 
 			return &dtos.TokenDecodedDto{
 				AccessTokenId: accessUUID,
-				UserId:   userId,
+				UserId:        userId,
 			}, nil
 		} else {
 			accessUUID, ok := claims["refresh_uuid"].(string)
@@ -120,7 +121,7 @@ func DecodeToken(tokenString string, isRefeshToken bool) (*dtos.TokenDecodedDto,
 
 			return &dtos.TokenDecodedDto{
 				RefeshTokenId: accessUUID,
-				UserId:   userId,
+				UserId:        userId,
 			}, nil
 		}
 	}

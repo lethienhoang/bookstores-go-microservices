@@ -1,6 +1,6 @@
 package main
 
-import "github.com/bookstores/oauth-api/app"
+import "github.com/bookstores-go-microservices/oauth-api/app"
 
 func main() {
 	app.StartApplication()

@@ -1,11 +1,11 @@
 package services
 
 import (
-	"github.com/bookstores/users-api/domains/users"
-	dtos "github.com/bookstores/users-api/dtos/users"
-	"github.com/bookstores/users-api/requests"
-	"github.com/bookstores/users-api/untils/crypto"
-	"github.com/bookstores/users-api/untils/errors"
+	"github.com/bookstores-go-microservices/users-api/domains/users"
+	dtos "github.com/bookstores-go-microservices/users-api/dtos/users"
+	"github.com/bookstores-go-microservices/users-api/requests"
+	"github.com/bookstores-go-microservices/users-api/untils/crypto"
+	"github.com/bookstores-go-microservices/users-api/untils/errors"
 	"github.com/jinzhu/copier"
 )
 
@@ -31,7 +31,7 @@ func (s *userService) Create(request *requests.CreateOrUpdateUserRequest) (*dtos
 	}
 
 	user := new(users.User)
-	request.Password= crypto.GetMd5Hash(request.Password)
+	request.Password = crypto.GetMd5Hash(request.Password)
 
 	if err := copier.Copy(&user, &request); err != nil {
 		return nil, errors.NewBadRequestError("can't copy user: " + err.Error())
@@ -144,8 +144,8 @@ func (s *userService) LoginUser(request *requests.LoginRequest) (*dtos.LoginDto,
 
 	res := dtos.LoginDto{
 		UserInfo: userDtos,
-		Email: user.Email,
-		IsLogin: true,
+		Email:    user.Email,
+		IsLogin:  true,
 	}
 
 	return &res, nil

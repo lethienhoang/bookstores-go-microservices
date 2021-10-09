@@ -3,7 +3,7 @@ package requests
 import (
 	"strings"
 
-	"github.com/bookstores/users-api/untils/errors"
+	"github.com/bookstores-go-microservices/users-api/untils/errors"
 )
 
 type CreateOrUpdateUserRequest struct {

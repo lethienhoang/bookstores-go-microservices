@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"github.com/bookstores/users-api/controllers"
+	"github.com/bookstores-go-microservices/users-api/controllers"
 	"github.com/gin-gonic/gin"
 )
 

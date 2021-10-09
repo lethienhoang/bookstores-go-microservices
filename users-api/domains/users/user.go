@@ -3,11 +3,11 @@ package users
 import (
 	"fmt"
 
-	"github.com/bookstores/users-api/db"
-	"github.com/bookstores/users-api/untils/date_utils"
-	"github.com/bookstores/users-api/untils/errors"
-	"github.com/bookstores/users-api/untils/loggers"
-	"github.com/bookstores/users-api/untils/mysql_utils"
+	"github.com/bookstores-go-microservices/users-api/db"
+	"github.com/bookstores-go-microservices/users-api/untils/date_utils"
+	"github.com/bookstores-go-microservices/users-api/untils/errors"
+	"github.com/bookstores-go-microservices/users-api/untils/loggers"
+	"github.com/bookstores-go-microservices/users-api/untils/mysql_utils"
 )
 
 type User struct {
@@ -21,11 +21,11 @@ type User struct {
 }
 
 const (
-	queryInsertUser = "INSERT INTO users (first_name, last_name, email, date_created, status, Password) VALUES (?, ?, ?, ?, ?, ?)"
-	queryGetUser    = "SELECT Id, first_name, last_name, email, date_created FROM users WHERE Id = ?"
-	queryUpdateUser = "UPDATE users SET first_name = ?, last_name = ?, email = ?, date_created = ? WHERE Id = ?"
-	queryDeleteUser = "DELETE FROM users WHERE Id = ?"
-	queryFindUser   = "SELECT Id, first_name, last_name, email, date_created, status FROM users WHERE status=?"
+	queryInsertUser         = "INSERT INTO users (first_name, last_name, email, date_created, status, Password) VALUES (?, ?, ?, ?, ?, ?)"
+	queryGetUser            = "SELECT Id, first_name, last_name, email, date_created FROM users WHERE Id = ?"
+	queryUpdateUser         = "UPDATE users SET first_name = ?, last_name = ?, email = ?, date_created = ? WHERE Id = ?"
+	queryDeleteUser         = "DELETE FROM users WHERE Id = ?"
+	queryFindUser           = "SELECT Id, first_name, last_name, email, date_created, status FROM users WHERE status=?"
 	queryFindByEmailAndPass = "SELECT Id, first_name, last_name, email, date_created, status FROM users WHERE email=? and password=? and status='ACTIVE'"
 )
 

@@ -3,7 +3,7 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/bookstores/users-api/db"
+	"github.com/bookstores-go-microservices/users-api/db"
 	"github.com/gin-gonic/gin"
 )
 

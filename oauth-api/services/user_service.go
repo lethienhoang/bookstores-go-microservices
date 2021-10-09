@@ -1,11 +1,11 @@
 package services
 
 import (
-	"github.com/bookstores/oauth-api/dtos"
-	"github.com/bookstores/oauth-api/repository/access_token"
-	"github.com/bookstores/oauth-api/repository/users"
-	"github.com/bookstores/oauth-api/requests"
-	"github.com/bookstores/oauth-api/utils/errors"
+	"github.com/bookstores-go-microservices/oauth-api/dtos"
+	"github.com/bookstores-go-microservices/oauth-api/repository/access_token"
+	"github.com/bookstores-go-microservices/oauth-api/repository/users"
+	"github.com/bookstores-go-microservices/oauth-api/requests"
+	"github.com/bookstores-go-microservices/oauth-api/utils/errors"
 )
 
 type IUserService interface {
@@ -31,17 +31,17 @@ func (s *UserService) LoginUser(request *requests.LoginRequest) (*dtos.TokenDto,
 
 	user, err := s.repository.LoginUser(request)
 	if err != nil {
-		return  nil, err
+		return nil, err
 	}
 
 	atService := NewAccessTokenService(access_token.NewAccessTokenRepository())
 	token, err := atService.CreateNewToken(user.UserInfo.Id)
 	if err != nil {
-		return  nil, err
+		return nil, err
 	}
 
-	return &dtos.TokenDto {
-		AccessToken: token.AccessToken,
+	return &dtos.TokenDto{
+		AccessToken:  token.AccessToken,
 		RefreshToken: token.RefreshToken,
 	}, nil
 }
@@ -50,16 +50,16 @@ func (s *UserService) RefeshToken(userId int64) (*dtos.TokenDto, *errors.RestErr
 	atService := NewAccessTokenService(access_token.NewAccessTokenRepository())
 	token, err := atService.CreateNewToken(userId)
 	if err != nil {
-		return  nil, err
+		return nil, err
 	}
 
-	return &dtos.TokenDto {
-		AccessToken: token.AccessToken,
+	return &dtos.TokenDto{
+		AccessToken:  token.AccessToken,
 		RefreshToken: token.RefreshToken,
 	}, nil
 }
 
-func (s *UserService) DelToken(tokenId string) *errors.RestError  {
+func (s *UserService) DelToken(tokenId string) *errors.RestError {
 	atService := NewAccessTokenService(access_token.NewAccessTokenRepository())
 	return atService.DeleteToken(tokenId)
 }

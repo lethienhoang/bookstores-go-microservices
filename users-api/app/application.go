@@ -5,9 +5,9 @@ import (
 	"os"
 	"regexp"
 
-	"github.com/bookstores/users-api/db"
-	"github.com/bookstores/users-api/routes"
-	"github.com/bookstores/users-api/untils/loggers"
+	"github.com/bookstores-go-microservices/users-api/db"
+	"github.com/bookstores-go-microservices/users-api/routes"
+	"github.com/bookstores-go-microservices/users-api/untils/loggers"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )

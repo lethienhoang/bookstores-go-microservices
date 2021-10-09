@@ -1,8 +1,9 @@
 package access_token
 
 import (
-	"github.com/bookstores/oauth-api/db"
 	"time"
+
+	"github.com/bookstores-go-microservices/oauth-api/db"
 )
 
 func NewAccessTokenRepository() IAccessTokenRepository {

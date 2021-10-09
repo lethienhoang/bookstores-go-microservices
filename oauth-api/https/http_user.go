@@ -1,13 +1,14 @@
 package https
 
 import (
-	"github.com/bookstores/oauth-api/repository/access_token"
-	"github.com/bookstores/oauth-api/requests"
-	"github.com/bookstores/oauth-api/services"
-	"github.com/bookstores/oauth-api/utils/errors"
-	"github.com/bookstores/oauth-api/utils/jwt_auth"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/bookstores-go-microservices/oauth-api/repository/access_token"
+	"github.com/bookstores-go-microservices/oauth-api/requests"
+	"github.com/bookstores-go-microservices/oauth-api/services"
+	"github.com/bookstores-go-microservices/oauth-api/utils/errors"
+	"github.com/bookstores-go-microservices/oauth-api/utils/jwt_auth"
+	"github.com/gin-gonic/gin"
 )
 
 type IUserHandler interface {
@@ -45,7 +46,7 @@ func (u UserHandler) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, login)
 }
 
-func (u UserHandler) LogOut(c *gin.Context)  {
+func (u UserHandler) LogOut(c *gin.Context) {
 	bearToken := c.Request.Header.Get("Authorization")
 	tokenDecoded, err := jwt_auth.DecodeToken(bearToken, false)
 	if err != nil {
@@ -92,7 +93,7 @@ func (u UserHandler) VerifyToken(c *gin.Context) {
 	c.JSON(http.StatusOK, "Ok")
 }
 
-func (u *UserHandler) RefeshToken(c *gin.Context)  {
+func (u *UserHandler) RefeshToken(c *gin.Context) {
 	bearToken := map[string]string{}
 	if err := c.ShouldBindJSON(&bearToken); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, err.Error())

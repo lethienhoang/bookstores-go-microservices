@@ -1,8 +1,9 @@
 package requests
 
 import (
-	"github.com/bookstores/oauth-api/utils/errors"
 	"strings"
+
+	"github.com/bookstores-go-microservices/oauth-api/utils/errors"
 )
 
 type LoginRequest struct {

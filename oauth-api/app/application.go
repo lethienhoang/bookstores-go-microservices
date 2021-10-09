@@ -1,10 +1,10 @@
 package app
 
 import (
-	"github.com/bookstores/oauth-api/db"
-	"github.com/bookstores/oauth-api/https"
-	"github.com/bookstores/oauth-api/repository/users"
-	"github.com/bookstores/oauth-api/services"
+	"github.com/bookstores-go-microservices/oauth-api/db"
+	"github.com/bookstores-go-microservices/oauth-api/https"
+	"github.com/bookstores-go-microservices/oauth-api/repository/users"
+	"github.com/bookstores-go-microservices/oauth-api/services"
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,6 +25,6 @@ func StartApplication() {
 
 	err := router.Run(":8081")
 	if err != nil {
-		return 
+		return
 	}
 }
