@@ -6,7 +6,7 @@ import (
 
 	"github.com/bookstores-go-microservices/users-api/requests"
 	"github.com/bookstores-go-microservices/users-api/services"
-	"github.com/bookstores-go-microservices/users-api/untils/errors"
+	"github.com/lethienhoang/bookstores-utils-go/errors"
 	"github.com/gin-gonic/gin"
 )
 
