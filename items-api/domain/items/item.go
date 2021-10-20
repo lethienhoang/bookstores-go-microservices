@@ -1,5 +1,10 @@
 package items
 
+import (
+	"github.com/bookstores-go-microservices/items-api/domain"
+	"log"
+)
+
 type Item struct {
 	Id               string      `json:"id"`
 	Seller           int64       `json:"seller"`
@@ -21,4 +26,18 @@ type Description struct {
 type Picture struct {
 	Id  int64  `json:"id"`
 	Url string `json:"url"`
+}
+
+func (t *Item) GetTableName() string {
+	return "items"
+}
+
+func (t *Item) Save() error  {
+	_, err := domain.Client.Index(t.GetTableName(), "", t)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+
+	return nil
 }

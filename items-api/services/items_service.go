@@ -20,7 +20,11 @@ type ItemService struct {
 
 func (s *ItemService) Create(item *items.Item) (*items.Item, *errors.RestError) {
 	fmt.Println(item)
-	return nil, nil
+	if err := item.Save(); err != nil {
+		return nil, errors.NewBadRequestError(err.Error())
+	}
+
+	return item, nil
 
 }
 
