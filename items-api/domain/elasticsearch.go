@@ -15,7 +15,7 @@ var (
 
 type elasticsearchInterface interface {
 	Index(index string, id string, body interface{}) (*esapi.Response, error)
-
+	Search (index []string, query interface{}) (*esapi.Response, error)
 }
 
 type elasticsearchClient struct {

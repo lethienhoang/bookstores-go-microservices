@@ -33,7 +33,7 @@ func (t *Item) GetTableName() string {
 }
 
 func (t *Item) Save() error  {
-	_, err := domain.Client.Index(t.GetTableName(), "", t)
+	_, err := domain.Client.Index(t.GetTableName(), t.Id, t)
 	if err != nil {
 		log.Fatal(err)
 		return err

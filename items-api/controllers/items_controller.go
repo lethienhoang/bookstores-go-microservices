@@ -65,5 +65,45 @@ func (s *ItemController) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *ItemController) Get(w http.ResponseWriter, r *http.Request) {
+	bearToken := r.Header.Get("Authorization")
+	decodeToken, errToken := jwt_auth.DecodeToken(bearToken, false)
+	if errToken != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(errToken.Error())
+		return
+	}
 
+	id := r.URL.Query().Get("id")
+
+	query := map[string]interface{}{
+		"query": map[string]interface{}{
+			"bool": map[string]interface{}{
+				"should": []interface{}{
+					map[string]interface{}{
+						"match": map[string]interface{}{
+							"seller": decodeToken.UserId,
+						},
+					},
+					map[string]interface{}{
+						"match": map[string]interface{}{
+							"match": id,
+						},
+					},
+				},
+			},
+		},
+	}
+
+	result, restErr := services.ItemsService.Query(query)
+	if restErr != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(restErr.Code)
+		json.NewEncoder(w).Encode(restErr.Message)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(result)
 }

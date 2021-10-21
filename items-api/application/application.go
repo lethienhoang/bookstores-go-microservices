@@ -1,6 +1,7 @@
 package application
 
 import (
+	"github.com/bookstores-go-microservices/items-api/domain"
 	"github.com/gorilla/mux"
 	"net/http"
 	"time"
@@ -11,6 +12,8 @@ var (
 )
 
 func StartApplication() {
+
+	domain.NewElasticSearchClient()
 
 	mapUrls()
 
